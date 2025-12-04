@@ -1,0 +1,155 @@
+---
+title: "simulated_data"
+format: html
+editor: visual
+---
+
+# load packages
+
+```{r}
+
+{library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(faux)
+library(lmerTest)
+library(MASS)
+}
+
+set.seed(999)
+
+```
+
+# create df with one time variable
+
+```{r}
+
+# create number of ppts and days
+ppt <- 100
+days <- 28
+
+# create the data frame
+data1 <- data.frame(
+  id = rep(1:ppt, each = days),
+  day = rep(1:days, times = ppt)
+)
+
+# add between variable for political affiliation
+pol_aff <- sample(1:7, ppt, replace = TRUE)
+data1$pol_aff <- pol_aff[data1$id]
+
+# add slope for emotion variable
+slope1 <- mvrnorm(ppt, mu = c(10, -2),
+                    Sigma = matrix(c(4, 1, 1, 2), nrow = 2))
+# simulate emotion variable
+emotion <- c(NA)
+for(i in 1:nrow(data1)){
+  df1 <- data1[i,]
+  emotion[i] <- slope1[df1$id, 1] + df1$day * slope1[df1$id, 2] + rnorm(1)
+}
+
+data1$emotion <- emotion
+
+```
+
+## plot data
+
+```{r}
+ggplot(aes(x = day, y = emotion), data = data1) +
+  geom_line(aes(group = id), color = "gray") + 
+  geom_smooth(aes(group = 1), method = "lm", linewidth = 3, color = "red", se = FALSE) +
+  theme_bw()
+```
+
+## run model
+
+```{r}
+model1 <- lmer(emotion ~ day + pol_aff + (1 | id), data = data1)
+model1
+summary(model1)
+#confint(model1)
+```
+
+# create df with two time variables
+
+```{r}
+
+ppt <- 100
+days <- 28
+
+# create df
+data2 <- data.frame(
+  id = rep(1:ppt, each = days),
+  day = rep(1:days, times = ppt),
+  time = rep(0:(days-1), times = ppt),
+  timepre = rep(c(-7,-6, -5, -4, -3, -2, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), times = ppt),
+  timepost = rep(c(0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20), times = ppt)
+)
+
+# add between variable for political affiliation
+pol_aff <- sample(1:7, ppt, replace = TRUE)
+data2$pol_aff <- pol_aff[data2$id]
+
+# create slope to help create emotion variable
+slope2 <- mvrnorm(ppt, mu = c(10, 0, -2),
+                       Sigma = matrix(c(4, 0, 0, 0, 1, 0, 0, 0, 2),byrow = TRUE, nrow = 3))
+
+# simulate emotion variable
+emotion <- c(NA)
+for(i in 1:nrow(data2)){
+  df2 <- data2[i,]
+  emotion[i] <- slope2[df2$id, 1] + 
+                df2$timepre * slope2[df2$id, 2] +
+                df2$timepost * slope2[df2$id, 3] + 
+                rnorm(1)
+}
+
+data2$emotion <- emotion
+
+
+
+```
+
+## plot data
+
+```{r}
+ggplot(aes(x = time, y = emotion), data = data2) +
+  geom_line(aes(group = id), color = "gray") + 
+  geom_smooth(aes(group = 1), size = 3, color = "red", se = FALSE) +
+  theme_bw()
+```
+
+## run model
+
+```{r}
+
+model2 <- lmer(emotion ~ 1+ timepre + timepost + pol_aff + (1 + timepre+timepost| id), data = data2)
+model2 
+summary(model2) 
+#confint(model2)
+
+
+```
+
+Interpretation:
+
+So when both timepre and timepost are 0, emotion is at 9.67. Emotions decrease leading up to the election by -0.02059 for each 1 unit increase in time, meaning with each day. But then after the election that decrease is even stronger (though we are not comparing significance of slopes) and now with every day, emotions decrease by -2.13.
+
+What happens if we moderate by political affiliation?
+
+```{r}
+# basic main effect model
+model3a <- lmer(emotion ~ 1+ timepre  + timepost + pol_aff + (1 + timepre+timepost| id), data = data2)
+summary(model3a) 
+
+#interaction model 
+model3b <- lmer(emotion ~ 1+ timepre* pol_aff  + timepost * pol_aff + (1 + timepre+timepost| id), data = data2)
+summary(model3b) 
+
+```
+
+# CLEAN CODE CHUNK
+
+```{r}
+
+```

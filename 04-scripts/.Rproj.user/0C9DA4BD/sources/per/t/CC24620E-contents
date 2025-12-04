@@ -1,0 +1,86 @@
+---
+title: "Measurement"
+author: "Dr. Tabea Springstein"
+date: november 19 2024
+format: 
+  revealjs:
+    self-contained: true
+    slide-number: c/t
+    show-slide-number: all
+    footer: "PSYC 211"
+    transition: slide
+    logo: "UCR_Color.webp"
+    auto-stretch: false
+---
+
+## Today
+
+-   Quick overview John & Soto chapter
+
+-   Group project: Create a measure
+
+## Take-aways John & Soto
+
+-   Reliability
+
+-   Validity
+
+## Reliability
+
+Three traditional types of reliability
+
+-   Internal Consistency (Cronbach's ⍺)
+
+-   Retest
+
+-   Interrater
+
+## Reliability
+
+-   Unreliable measures can reduce the correlations you are able to find
+
+-   Cronbach's ⍺ relies on test length and inter item correlation (e.g., how redundant are items, how much breadth does the construct have)
+
+## Validity
+
+-   Process not a property (i.e., a measure can never truly be "valid" but you are engaging in a validation process)
+
+## Validity
+
+Five types of validity
+
+1.  Generalizability (across populations, groups, settings, tasks)
+
+2.  Content validity (representativeness of items)
+
+3.  Structural validity
+
+4.  External validity (relationship to other constructs are as expected)
+
+5.  Substantive validity (relates to theoretical processes)
+
+## Structural validity & SEM
+
+-   Structural equation modeling is used to evaluate the validity of the structure of your construct
+
+-   Confirmatory Factor Analysis is part of SEM but you can use SEM to model regression like relationships as well (e.g., path analysis)
+
+## Structural validity & SEM
+
+![](sem.png)
+
+## Structural validity & SEM
+
+![](sem%20compare.png)
+
+## Now you!
+
+-   Split up in groups
+
+-   Come up with a construct you want to measure
+
+-   How would you assess the three types of reliability for the measure?
+
+-   How would you assess the five types of validity of the measure?
+
+-   Incorporate as many insights from the chapter as possible as to what makes a reliable and valid measure

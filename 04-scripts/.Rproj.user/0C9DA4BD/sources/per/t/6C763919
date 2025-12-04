@@ -1,0 +1,32 @@
+{
+    "id": "6C763919",
+    "path": "~/Downloads/simulated_data_TS.qmd",
+    "project_path": null,
+    "type": "quarto_markdown",
+    "hash": "4158380250",
+    "contents": "",
+    "dirty": false,
+    "created": 1763140406798.0,
+    "source_on_save": false,
+    "relative_order": 12,
+    "properties": {
+        "rmdVisualMode": "true",
+        "rmdVisualWrapConfigured": "true",
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "rmdVisualModeLocation": "2687:4809.2001953125",
+        "cursorPosition": "123,0",
+        "scrollLine": "0",
+        "rmdVisualCollapsedChunks": "",
+        "docOutlineSize": "24"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1763141534,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1763141534627,
+    "read_only": false,
+    "read_only_alternatives": []
+}

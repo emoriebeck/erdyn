@@ -1,0 +1,548 @@
+---
+title: "Null Hypothesis Testing Part II"
+author: "Dr. Tabea Springstein"
+date: october 8 2024
+format: 
+  revealjs:
+    self-contained: true
+    slide-number: c/t
+    show-slide-number: all
+    footer: "PSYC 211"
+    transition: slide
+    logo: "UCR_Color.webp"
+---
+
+## Today
+
+-   Setting up hypotheses
+
+-   Making decisions about our hypotheses
+
+-   Deep dive on the p-value
+
+-   Confidence intervals
+
+## Setting up hypotheses
+
+1\) Theory
+
+2\) Research hypothesis
+
+3\) Statistical hypothesis
+
+## What is a research hypothesis?
+
+-   Testable and refutable claim
+
+    -   "Positive emotions lead to better future health outcomes"
+
+    -   "Self-reported fear is associated with activation in the amygdala"
+
+-   Not:
+
+    -   "Positive emotions are great"
+
+## Example
+
+Theory: Emotion expressions are universally recognized
+
+![](expressions.jpg)
+
+## Example
+
+Research Hypothesis:
+
+Anger is universally recognized from facial expressions
+
+## Example
+
+![](anger.png)
+
+Which emotion is this person showing?
+
+a\) anger
+
+b\) sadness
+
+## Example: Statistical Hypothesis
+
+-   If anger is not universally recognized (and if my experiment is well designed), then my participants are just guessing.
+
+-   If there is recognition of anger above chance I should expect them to get it right more than half of the time.
+
+**θ \>0.5**
+
+## Example: Statistical Hypothesis
+
+Null Hypothesis: Anger is not selected above chance (**θ = 0.5)**
+
+Alternative Hypothesis: Anger is selected above chance (**θ \>0.5)**
+
+## Example: Statistical Hypothesis
+
+-   Most of the time our experiments and studies do NOT test **one-sided hypotheses**
+
+-   For the sake of mimicking the more common psychological hypothesis test (two-sided) we will go ahead with testing:
+
+    -   Null Hypothesis: Anger is not selected above or below chance (**θ = 0.5)**
+
+    -   Alternative Hypothesis: Anger is selected above or below chance (**θ \>0.5 or θ \< 0.5)**
+
+## Null Hypothesis vs. Alternative hypothesis
+
+-   We purposefully we call it "Null Hypothesis Testing" instead of "Alternative Hypothesis Testing"
+
+-   We evaluate the **plausibility of our data** (or data more extreme) **if the null hypothesis is true**
+
+-   We are putting the null hypothesis on trial
+
+-   We are NOT getting evidence for the alternative hypothesis. Just AGAINST the null hypothesis
+
+-   What does this look like?
+
+## Null Hypothesis
+
+-   Before we collect data let's assume the null hypothesis = truth
+
+-   We show the anger picture to N=100 people
+
+-   What are all the possible outcomes?
+
+## Null Hypothesis
+
+```{r}
+library(ggplot2)
+theme_set(theme_classic())
+anger<-c(0:100)
+prob<-c() # Looping through the dbinom formula for each possible value of x (0-100)
+for (x in 0:100) {
+  probi<-dbinom(x=x, size=100,prob=.5)
+  prob<-c(prob,probi)
+} 
+
+df <- cbind(anger,prob)
+
+ggplot(data = df, aes(x = anger, y = prob)) + 
+  geom_col(width = 0.7, position = "dodge")+
+  scale_x_continuous("Number of People picking Anger")+
+ylab("Probability")
+```
+
+Note that none of the probabilities are 0 but some are very very small (100 = 7.888609e-31)
+
+-   Random tip: you can have R display the full number instead of using scientific notation
+
+```{r, echo=TRUE}
+options(scipen=9999)
+```
+
+## Let's collect some data
+
+```{r}
+anger_data<-c(rep(0,41),rep(1,59))
+anger_data<-sample(anger_data)
+
+```
+
+```{r, echo=T}
+head(anger_data)
+sum(anger_data)
+# 59 people recognized anger
+
+```
+
+What does that mean?
+
+## Testing the likelihood of data under the Null Hypothesis
+
+-   59 is more than the 50 we would expect if it was based purely on chance
+
+-   But is 59 different enough from 50?
+
+-   We need to test if 59 is a sufficiently unlikely result under the null hypothesis
+
+    -   So it should be a small likelihood
+
+    -   But how small?
+
+## Type I and Type II error
+
+-   When we make decisions about our hypotheses we have to think about balancing errors we could make
+
+    -   Type I: We reject the Null Hypothesis even though it is true
+
+        -   We assume that people can recognize anger even though our data was just by chance
+
+    -   Type II: We do not reject the Null Hypothesis even though it is false
+
+        -   We assume that people cannot recognize anger even though our data was not due to chance
+
+## Type I and Type II error
+
+|                              | Retain Null Hypothesis | Reject Null Hypothesis  |
+|------------------------------|------------------------|-------------------------|
+| **Null Hypothesis is True**  | 1-𝛼                    | 𝛼 (type I error rate)   |
+| **Null Hypothesis is False** | 𝛽 (type II error rate) | 1-𝛽 (power of the test) |
+
+For now we are focused on learning about Type I error. We will focus on Type II error when we talk about power.
+
+## Critical Regions and Critical Values
+
+-   At what point is the likelihood of the data or more extreme data (e.g., 59 or more correct guesses of anger) minimal enough under the Null Hypothesis that we think it doesn't matter?
+
+```{r}
+library(ggplot2)
+theme_set(theme_classic())
+anger<-c(0:100)
+prob<-c() # Looping through the dbinom formula for each possible value of x (0-100)
+for (x in 0:100) {
+  probi<-dbinom(x=x, size=100,prob=.5)
+  prob<-c(prob,probi)
+} 
+
+df <- cbind(anger,prob)
+
+ggplot(data = df, aes(x = anger, y = prob)) + 
+  geom_col(width = 0.7, position = "dodge")+
+  scale_x_continuous("Number of People picking Anger")+
+ylab("Probability")
+```
+
+## Critical Regions and Critical Values
+
+-   Typically we say the most extreme 2.5% at both ends of the probability distribution are so unlikely/extreme that any data we get in these critical regions we see as refuting the Null Hypothesis
+
+    -   𝛼 = .05
+
+## Critical Regions and Critical Values
+
+-   When we are testing a one-sided hypothesis we only look at one side of the distribution
+
+-   𝛼 = .05 translates to designating the left or right (depending on direction) 5% of distribution as too extreme
+
+## Critical Regions and Critical Values
+
+Let's see what the critical values are for our binomial (null hypothesis) distribution
+
+```{r, echo=T}
+qbinom(p=.975, size=100, prob=0.5)
+```
+
+-   If we got 60 or more people who select "anger" we could reject the null hypothesis that people are guessing which emotion is expressed
+
+## Critical Regions and Critical Values
+
+What about the other end of the distribution?
+
+```{r, echo=T}
+qbinom(p=.025, size=100, prob=0.5)
+```
+
+-   If we got 40 or less people who select "sadness" we could reject the null hypothesis that people are guessing which emotion is expressed
+
+-   However, this does not mean that people are "correctly" selecting anger, it means that they are selecting sadness above chance
+
+## Critical Regions and Critical Values
+
+If the critical value = 60, then our 59 people selecting anger DO NOT provide enough evidence to reject the null hypothesis
+
+## Critical Regions and Critical Values
+
+-   If we did not care about accounting for the possibility of picking sadness above chance we should do a one-sided test
+
+```{r, echo=T}
+qbinom(p=.95, size=100, prob=0.5)
+```
+
+In this case, 58 people or more picking anger would be extreme enough for us to reject the null hypothesis (that people pick anger based on chance)
+
+-   One-sided tests actually not very frequently done in psychology (even with directional hypotheses)
+
+## Critical Regions and Critical Values
+
+-   If the critical value = 58, then our 59 people selecting anger DOES provide enough evidence to reject the null hypothesis
+
+## Running the statistical test (two-sided)
+
+```{r, echo=T}
+binom.test(
+  x = 59, # observed successes
+  n = 100, # total no. of observations
+  p = 0.5, # null hypothesis
+  alternative = "two.sided" # alternative hypothesis
+)
+```
+
+## Running the statistical test (two-sided)
+
+The probability of obtaining data like ours (59 people recognizing anger) or more extreme data if the Null Hypothesis is true is:
+
+```         
+ 0.08863
+```
+
+## The p-value
+
+::: {.callout-tip title="Important"}
+The p-value represents the likelihood of observing our data or data more extreme if we assume that the null hypothesis is true.
+:::
+
+-   Data refers to our test-statistics
+
+-   In our binomial example = number of "hits" for anger
+
+-   But could also be a difference between two groups (in a t-test) or a relationship between two variables (in a correlation)
+
+## The p-value
+
+-   Why did I choose the critical values/region based on ⍺ = .05 and chose the upper and lower 2.5% of our distribution as the rejection areas?
+
+-   How do we evaluate the p-value `R` provided?
+
+## Perspectives on p-values
+
+-   The 𝛼 level we chose (.05) is very commonly used but in many ways arbitrary
+
+-   You could use a more stringent cut-off like .01
+
+-   Depends on norms in your field
+
+-   Be mindful that by setting your 𝛼 level you are deciding what Type I error you are comfortable with
+
+## Reporting the p-value
+
+-   Report the exact level of significance wherever you can
+
+-   For details on how different theorists have thought about the p-value see our text book and for more detail see "Mindless Statistics" by Gigerenzer, 2004 (on perusall)
+
+## How we talk about the p-value matters
+
+Yes:
+
+-   "Rejected the null hypothesis" or "Failed to reject the null hypothesis"
+
+No:
+
+-   "Proved the null hypothesis" (We never know for sure what the truth is)
+
+-   "Proved the alternative hypothesis" ( We only tested the Null Hypothesis)
+
+## Mini Quiz A: What is a p-value? {.scrollable .smaller}
+
+A\) the probability that the null hypothesis is true.
+
+B\) the probability that the alternative hypothesis is true.
+
+C\) the probability, derived from the assumption that H0 is true, of obtaining an outcome for the chosen test statistic that is the exact same as the observed outcome.
+
+D\) a measure of evidence in favor of H0
+
+E\) the probability, derived from the assumption that H0 is true, of obtaining an outcome for the chosen test statistic that is the same as the observed outcome or more extreme
+
+F\) a measure of evidence against H0
+
+## Mini Quiz A
+
+E and F are correct
+
+## Mini Quiz B
+
+Suppose you have a treatment that you suspect may alter performance on a certain task.
+
+You compare the means of your control and experimental groups.
+
+You use a simple independent means t-test and your result is significant (t = 2.7, d.f. = 18, p = .01).
+
+## Mini Quiz B {.scrollable .smaller}
+
+Result: t = 2.7, d.f. = 18, p = .01
+
+A\) You have absolutely disproved the null hypothesis (that is, there is no difference between the population means).
+
+B\) You have found the probability of the null hypothesis being true.
+
+C\) You have absolutely proved your experimental hypothesis (that there is a difference between the population means).
+
+D\) You can deduce the probability of the experimental hypothesis being true.
+
+E\) You know, if you decide to reject the null hypothesis, the probability that you are making the wrong decision.
+
+F\) You have a reliable experimental finding in the sense that if, hypothetically, the experiment were repeated a great number of times, you would obtain a significant result on 99 % of occasions.
+
+## Mini Quiz B
+
+None are correct
+
+## Mini Quiz B - Most people get it wrong
+
+![](gigerenzer.png)
+
+"The most frequent illusion was Statement 5, endorsed by about 70% of all three groups"
+
+## Issues with p-values
+
+Very commonly misinterpreted
+
+-   "proof that our hypothesis is true" (see previous slides)
+
+-   statistical significance = practical significance
+
+See: [Brief Report about American Statistical Association's (ASA) warning about p-values from 2016](https://www.nature.com/articles/nature.2016.19503.pdf)
+
+## Alternatives to the p-value
+
+-   NHST version: Confidence intervals
+
+-   Goodbye to NHST: Bayesian Statistics
+
+## Confidence Intervals
+
+-   Not straightforward to calculate for binomial test statistics
+
+-   Will go back to our example on estimating mean life satisfaction from last week (and get back to CIs for test statistics in the next weeks)
+
+## Confidence Interval
+
+What is it?
+
+-   Quantifying uncertainty around our estimate
+
+-   "If we replicated the experiment over and over again and computed a 95% confidence interval for each replication, then 95% of those intervals would contain the true mean"
+
+What is it not?
+
+-   "We are 95% confident that the true mean lies within this interval"
+
+## Confidence Interval
+
+Example: We want to know the mean life satisfaction of people in Riverside
+
+-   We get a random sample of 100 people living in Riverside
+
+```{r}
+set.seed(1234)
+swl<-rnorm(100,mean=3.5, sd=1)
+head(swl)
+```
+
+Let's get the mean of this sample:
+
+```{r}
+mean(swl)
+```
+
+## **Getting a Confidence Interval**
+
+Combining two things we have learned over the last lectures:
+
+-   We know that the sampling distribution of the mean is normal
+
+-   We know that there is a \~ 95% chance that a normally-distributed quantity will fall within two standard deviations of the true mean
+
+![](normaldist.png)
+
+## **Getting a Confidence Interval**
+
+-   How do we get the specific values of the sampling distribution that correspond to two standard deviations of the sampling distribution mean?
+
+    -   We can use the standard error (our way to get to the standard deviation of the "true" sampling distribution)
+
+## **Getting the SEM**
+
+Let's calculate the standard error of the mean for our estimate of mean life satisfaction in Riverside
+
+$$
+SEM=\frac{\hat{\sigma}}{\sqrt{N}}
+$$
+
+```{r, echo= T}
+sd(swl)/sqrt(length(swl))
+```
+
+## **Getting the Confidence Interval**
+
+Now let's check where 95% of values fall within the distribution (to get a 95% CI)
+
+```{r, echo =T}
+qnorm( p = c(.025, .975))
+```
+
+-   This seems intuitive - but unfortunately we're not allowed to use the actual normal distribution
+
+-   We need to use the t-distribution because we do not know the true population standard deviation
+
+## Quick intro: The t-distribution
+
+::: columns
+::: {.column width="50%"}
+-   Approximates the normal distribution BUT population variance is unknown
+
+-   Variance calculated based on the total number of observations minus 1
+
+-   Looks similar to a normal distribution but with heavier tails
+:::
+
+::: {.column width="50%"}
+![](images/clipboard-1761427780.png)
+:::
+:::
+
+## **Getting the Confidence Interval**
+
+```{r, echo =T}
+qt(p = c(.025, .975),df=100-1)
+
+```
+
+The larger our sample size the closer the values based on t- and normal distribution become
+
+## **Getting the Confidence Interval**
+
+The confidence interval equation (t-distribution with N=100)
+
+$$
+CI_{95}= \overline{X} \pm (1.98 \frac{\hat{\sigma}}{\sqrt{N}})
+$$
+
+Plugging in our values
+
+$$
+CI_{95}= 3.343238 \pm (1.98 * 0.1004405)
+$$
+
+```{r,echo=T}
+3.343238 + (1.98 * 0.1004405)
+3.343238 - (1.98 * 0.1004405)
+```
+
+## **Getting the Confidence Interval**
+
+Life satisfaction in Riverside is 3.43 (95% CI \[3.14, 3.54\])
+
+## **Interpreting the Confidence Interval**
+
+If we repeatedly sample people from the population of Riverside, 95% of confidence intervals contain the true population mean.
+
+That is all we are allowed to say. Read more on the misinterpretation of confidence intervals here: <https://link.springer.com/article/10.3758/s13423-013-0572-3#Sec9>
+
+## Later on
+
+We will get back to computing confidence intervals for different test statistics and will compare them to p-values later in the class
+
+## Bayesian Perspective
+
+-   Incorporating priors into statistical inference
+
+-   Can actually interpret confidence intervals!
+
+-   Can actually test whether or not the Null Hypothesis is True
+
+-   For an intro to Bayesian Stats: Book Statistical Rethinking by Richard McElreath
+
+    -   Or watch his [lectures videos online](https://www.youtube.com/watch?v=FdnMWdICdRs&list=PLDcUM9US4XdPz-KxHM4XHt7uUVGWWVSus)
+
+## For Thursday
+
+Please complete the Open Science Readings on Perusall and leave reactions, comments and questions!
+
+You will summarize specific articles and comments in class so you are helping your future self if you comment actively :)
