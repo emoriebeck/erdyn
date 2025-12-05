@@ -1,0 +1,11 @@
+name: personalised-happiness
+title: personalised-happiness
+username:
+account: emoriebeck
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4763550
+bundleId: 9020261
+url: https://emoriebeck.shinyapps.io/personalised-happiness/
+asMultiple: FALSE
+asStatic: FALSE
