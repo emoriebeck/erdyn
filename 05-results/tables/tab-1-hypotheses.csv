@@ -1,0 +1,17 @@
+﻿Model ,Emotion,Parameter,Goal,SWL,Dep. ,Adaptive ER Strat.,Maladaptive ER Strat.,ER Strat. Repertoire
+RQ1,Negative,Attractor Location,/,-,+,-,+,-
+RQ1,Negative,Attractor Strength,/,+,-,+,-,+
+RQ1,Positive,Attractor Location ,/,+,-,+,-,+
+RQ1,Positive,Attractor Strength,/,+,-,+,-,+
+RQ2,Negative,Attractor Location,Decrease,/,/,/,/,/
+RQ2,Negative,Attractor Strength,Maintain,/,/,/,/,/
+RQ2,Negative,Attractor Location,Increase,/,/,/,/,/
+RQ2,Negative,Attractor Strength,Decrease,+,-,+,-,+
+RQ2,Negative,Attractor Location,Maintain,/,/,/,/,/
+RQ2,Negative,Attractor Strength,Increase,/,/,/,/,/
+RQ2,Positive,Attractor Location,Decrease,/,/,/,/,/
+RQ2,Positive,Attractor Strength,Maintain,/,/,/,/,/
+RQ2,Positive,Attractor Location,Increase,/,/,/,/,/
+RQ2,Positive,Attractor Strength,Decrease,/,/,/,/,/
+RQ2,Positive,Attractor Location,Maintain,/,/,/,/,/
+RQ2,Positive,Attractor Strength,Increase,+,-,+,-,+
